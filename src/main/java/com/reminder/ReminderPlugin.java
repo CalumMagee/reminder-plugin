@@ -20,7 +20,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 public class ReminderPlugin extends Plugin
 {
 
-	private static final int OLM_ROOM_REGION = 12593;
+	private static final int OLM_ROOM_REGION = 12889;
 
 	@Inject
 	private Notifier notifier;
