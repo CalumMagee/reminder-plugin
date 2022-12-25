@@ -20,7 +20,7 @@ public interface ReminderConfig extends Config
 			keyName = "pairsString",
 			name = "ZoneID/ItemID pairs",
 			description = "Send notification if the itemID is not in inventory in the corresponding ZoneId.\n" +
-					"Format is [ZoneID1,ItemID1],[ZoneID1,ItemID2],[ZoneID2,ItemID3]",
+					"Format is [ZoneID1,ItemID1];[ZoneID1,ItemID2];[ZoneID2,ItemID3]",
 			section = pairs
 	)
 	default String pairsString()
