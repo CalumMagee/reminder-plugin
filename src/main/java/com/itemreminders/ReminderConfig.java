@@ -16,6 +16,13 @@ public interface ReminderConfig extends Config
 	)
 	String pairs = "pairs";
 
+	@ConfigSection(
+		name = "Ticks between notifications",
+		description = "There will be this many ticks between notifications. Default 4",
+		position = 1
+	)
+	String ticks = "ticks";
+
 	@ConfigItem(
 		position = 1,
 		keyName = "pairsString",
@@ -27,5 +34,17 @@ public interface ReminderConfig extends Config
 	default String pairsString()
 	{
 		return "";
+	}
+
+	@ConfigItem(
+		position = 1,
+		keyName = "ticks",
+		name = "Ticks between notifications",
+		description = "There will be this many ticks between notifications. Default 4",
+		section = ticks
+	)
+	default int ticksNum()
+	{
+		return 4;
 	}
 }

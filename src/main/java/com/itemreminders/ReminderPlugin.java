@@ -9,6 +9,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.client.Notifier;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
@@ -24,6 +25,8 @@ public class ReminderPlugin extends Plugin
 
 	private HashMap<Integer, List<String>> pairsMap = new HashMap<>();
 
+	int tickDelay;
+
 	@Inject
 	private Notifier notifier;
 
@@ -37,6 +40,7 @@ public class ReminderPlugin extends Plugin
 	protected void startUp() throws Exception
 	{
 		loadPairs();
+		tickDelay = 0;
 	}
 
 	public boolean isInListedZone()
@@ -82,6 +86,15 @@ public class ReminderPlugin extends Plugin
 
 	}
 
+	private void incrementCounter(){
+		if (tickDelay == config.ticksNum()) {
+			tickDelay = 0;
+		}
+		else {
+			tickDelay++;
+		}
+	}
+
 	@Subscribe
 	public void onGameTick(GameTick tick)
 	{
@@ -106,11 +119,21 @@ public class ReminderPlugin extends Plugin
 				}
 				if (anyItem)
 				{
-					//Is there any non-hacky way to do this only every 5 seconds or so?
-					notifier.notify("You are missing an item!");
+					if (tickDelay == 0) {
+						notifier.notify("You are missing an item!");
+						incrementCounter();
+					}
+					else {
+						incrementCounter();
+					}
 				}
 			}
 		}
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event) {
+		tickDelay = 0;
 	}
 
 
