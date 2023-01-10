@@ -1,10 +1,12 @@
 package com.itemreminders;
 
 import com.google.inject.Provides;
+import com.sun.jna.platform.win32.OaIdl;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.Notifier;
 import net.runelite.client.config.ConfigManager;
@@ -46,7 +48,7 @@ public class ReminderPlugin extends Plugin
 	public boolean isInListedZone()
 	{
 		return client.getLocalPlayer() != null
-			&& pairsMap.containsKey(client.getLocalPlayer().getWorldLocation().getRegionID());
+			&& pairsMap.containsKey(WorldPoint.fromLocalInstance(client, client.getLocalPlayer().getLocalLocation()).getRegionID());
 	}
 
 	private void loadPairs()
@@ -86,11 +88,14 @@ public class ReminderPlugin extends Plugin
 
 	}
 
-	private void incrementCounter(){
-		if (tickDelay == config.ticksNum()) {
+	private void incrementCounter()
+	{
+		if (tickDelay == config.ticksNum())
+		{
 			tickDelay = 0;
 		}
-		else {
+		else
+		{
 			tickDelay++;
 		}
 	}
@@ -98,11 +103,14 @@ public class ReminderPlugin extends Plugin
 	@Subscribe
 	public void onGameTick(GameTick tick)
 	{
+		int debug = WorldPoint.fromLocalInstance(client, client.getLocalPlayer().getLocalLocation()).getRegionID();
+		System.out.println(debug);
 		boolean anyItem = false;
 		loadPairs();
+
 		if (isInListedZone())
 		{
-			int currentRegion = client.getLocalPlayer().getWorldLocation().getRegionID();
+			int currentRegion = WorldPoint.fromLocalInstance(client, client.getLocalPlayer().getLocalLocation()).getRegionID();
 			if (null != pairsMap.get(currentRegion))
 			{
 
@@ -119,11 +127,13 @@ public class ReminderPlugin extends Plugin
 				}
 				if (anyItem)
 				{
-					if (tickDelay == 0) {
+					if (tickDelay == 0)
+					{
 						notifier.notify("You are missing an item!");
 						incrementCounter();
 					}
-					else {
+					else
+					{
 						incrementCounter();
 					}
 				}
@@ -132,7 +142,8 @@ public class ReminderPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onConfigChanged(ConfigChanged event) {
+	public void onConfigChanged(ConfigChanged event)
+	{
 		tickDelay = 0;
 	}
 
